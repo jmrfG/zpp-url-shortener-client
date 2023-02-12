@@ -1,29 +1,42 @@
 import { Inter } from '@next/font/google'
 import axios from 'axios'
+import { useState } from 'react'
 const inter = Inter({ subsets: ['latin'] })
 
 
-
+const postData = async (url = '', data = {}) => {
+  try {
+    const response = await axios.post(url, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+};
 export default function Home(props) {
   let data = props.urls
+  const [longURL, setLongURL] = useState('');
 
-  const register = (url) => {
-    axios.post('https://zpp.up.railway.app/urls/shorten', {originalUrl: url}).then((res) => {
-    }).catch((err) => { console.log(err) })
-  }
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('https://zpp.up.railway.app/urls/shorten', {
+        originalUrl: longURL
+      });
+      console.log(response)
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="container my-4">
       <h1 className="display-3 text-center border-bottom">URL-Shortener</h1>
-      <form action="/" method="post" className="my-5" onSubmit={(e) => {
-        register(e.target[0].value)
-        console.log("post")
-      }}>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="url">URL</label>
-          <input type="url" className="form-control" id="url" aria-describedby="url" />
-        </div>
+          <input type="text" className='form-control' value={longURL} onChange={(e) => setLongURL(e.target.value)} />      </div>
         <br />
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
@@ -60,8 +73,7 @@ export default function Home(props) {
         Shortened links will become invalid after 24 hours of its creation.
       </small>
     </div>
-
-  )
+  );
 }
 
 
