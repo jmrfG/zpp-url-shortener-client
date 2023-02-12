@@ -5,17 +5,18 @@ const inter = Inter({ subsets: ['latin'] })
 
 
 export default function Home(props) {
-
-
   let data = props.urls
+
   const register = (url) => {
-    axios.post('http://localhost:3005/shorten', { "longUrl": url }).then((res) => {
+    axios.post('https://zpp.up.railway.app/urls/shorten', {originalUrl: url}).then((res) => {
     }).catch((err) => { console.log(err) })
   }
+
+
   return (
     <div className="container my-4">
       <h1 className="display-3 text-center border-bottom">URL-Shortener</h1>
-      <form action='/' method="post" className="my-5" onSubmit={(e) => {
+      <form action="/" method="post" className="my-5" onSubmit={(e) => {
         register(e.target[0].value)
         console.log("post")
       }}>
@@ -40,15 +41,15 @@ export default function Home(props) {
             return (
               <tr key={url._id}>
                 <td>
-                  <a href={url.longUrl}>{url.longUrl}</a>
+                  <a href={url.originalUrl}>{url.originalUrl}</a>
                 </td>
                 <td>
-                  <a href={url.shortUrl}>
+                  <a href={`https://${url.shortUrl}`}>
                     {url.shortUrl}
                   </a>
                 </td>
                 <td>
-                  {url.isValid == true ?'yes' : 'no'}
+                  {url.isValid == true ? 'yes' : 'no'}
                 </td>
               </tr>)
           })}
@@ -65,7 +66,7 @@ export default function Home(props) {
 
 
 export const getStaticProps = async () => {
-  const res = await axios.get("http://localhost:3005/all")
+  const res = await axios.get("https://zpp.up.railway.app/urls/all")
   return {
     props: {
       urls: res.data
