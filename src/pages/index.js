@@ -21,7 +21,7 @@ export default function Home(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://zpp.up.railway.app/urls/shorten', {
+      const response = await axios.post('https://zpp.up.railway.app/shorten', {
         originalUrl: longURL
       });
       //console.log(response.headers)
@@ -58,7 +58,7 @@ export default function Home(props) {
 
 
 export const getStaticProps = async () => {
-  const res = await axios.get("https://zpp.up.railway.app/urls/all")
+  const res = await axios.get("https://zpp.up.railway.app/all")
   return {
     props: {
       urls: res.data
