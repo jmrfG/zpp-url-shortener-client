@@ -1,7 +1,5 @@
-import { Inter } from '@next/font/google'
 import axios from 'axios'
 import { useState } from 'react'
-const inter = Inter({ subsets: ['latin'] })
 
 
 const postData = async (url = '', data = {}) => {
@@ -13,20 +11,25 @@ const postData = async (url = '', data = {}) => {
     return error;
   }
 };
+
 export default function Home(props) {
   let data = props.urls
+  console.log(data)
   const [longURL, setLongURL] = useState('');
-
+  const [shortURL, setShortURL] = useState('');
+  const [errorString, setErrorString] = useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('https://zpp.up.railway.app/urls/shorten', {
         originalUrl: longURL
       });
-      console.log(response)
-      window.location.reload();
+      //console.log(response.headers)
+      setShortURL(response.data.shortUrl)
+      //      window.location.reload();
     } catch (error) {
-      console.error(error);
+      console.error(error.response.data);
+      setErrorString("You are trying to register a link that already exists in our database.")
     }
   };
 
@@ -35,40 +38,17 @@ export default function Home(props) {
       <h1 className="display-3 text-center border-bottom">URL-Shortener</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="url">URL</label>
+          <label htmlFor="url">Original URL</label>
           <input type="text" className='form-control' value={longURL} onChange={(e) => setLongURL(e.target.value)} />      </div>
+        <br />
+        <div className="form-group">
+          <label htmlFor="url">Short URL</label>
+          {shortURL ? <p><a href={`https://${shortURL}`}>{shortURL}</a></p> : ''}
+          {errorString ? <p>{errorString}</p> : ''}
+        </div>
         <br />
         <button type="submit" className="btn btn-primary">Submit</button>
       </form>
-
-      <table className="table table-striped table-responsive">
-        <thead>
-          <tr>
-            <th scope="col">Original URL</th>
-            <th scope="col">Shortened URL</th>
-            <th scope="col">Is Valid?</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((url) => {
-            return (
-              <tr key={url._id}>
-                <td>
-                  <a href={url.originalUrl}>{url.originalUrl}</a>
-                </td>
-                <td>
-                  <a href={`https://${url.shortUrl}`}>
-                    {url.shortUrl}
-                  </a>
-                </td>
-                <td>
-                  {url.isValid == true ? 'yes' : 'no'}
-                </td>
-              </tr>)
-          })}
-        </tbody>
-      </table>
-      <br />
       <small>
         Shortened links will become invalid after 24 hours of its creation.
       </small>
