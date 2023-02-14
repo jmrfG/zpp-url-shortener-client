@@ -39,7 +39,7 @@ export default function Home(props) {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="url">Original URL</label>
-          <input type="text" className='form-control' value={longURL} onChange={(e) => setLongURL(e.target.value)} />      </div>
+          <input type="url" className='form-control' value={longURL} onChange={(e) => setLongURL(e.target.value)} />      </div>
         <br />
         <div className="form-group">
           <label htmlFor="url">Short URL</label>
